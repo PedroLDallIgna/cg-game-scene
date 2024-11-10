@@ -47,9 +47,6 @@
     <ClCompile Include="Helpers.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Scene2.cpp">
-      <Filter>Scenes</Filter>
-    </ClCompile>
     <ClCompile Include="CModel_3DS.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -61,21 +58,6 @@
     </ClCompile>
     <ClCompile Include="math3d.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Scene3.cpp">
-      <Filter>Scenes</Filter>
-    </ClCompile>
-    <ClCompile Include="Scene4.cpp">
-      <Filter>Scenes</Filter>
-    </ClCompile>
-    <ClCompile Include="Scene5.cpp">
-      <Filter>Scenes</Filter>
-    </ClCompile>
-    <ClCompile Include="Scene6.cpp">
-      <Filter>Scenes</Filter>
-    </ClCompile>
-    <ClCompile Include="Scene7.cpp">
-      <Filter>Scenes</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -112,9 +94,6 @@
     <ClInclude Include="Defines.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Scene2.h">
-      <Filter>Scenes</Filter>
-    </ClInclude>
     <ClInclude Include="CModel_3DS.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -129,21 +108,6 @@
     </ClInclude>
     <ClInclude Include="math3d.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Scene3.h">
-      <Filter>Scenes</Filter>
-    </ClInclude>
-    <ClInclude Include="Scene4.h">
-      <Filter>Scenes</Filter>
-    </ClInclude>
-    <ClInclude Include="Scene5.h">
-      <Filter>Scenes</Filter>
-    </ClInclude>
-    <ClInclude Include="Scene6.h">
-      <Filter>Scenes</Filter>
-    </ClInclude>
-    <ClInclude Include="Scene7.h">
-      <Filter>Scenes</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

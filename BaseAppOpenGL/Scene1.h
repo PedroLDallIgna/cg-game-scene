@@ -7,11 +7,11 @@
 
 
 
-class CScene3 : public CSceneBaseClass
+class CScene1 : public CSceneBaseClass
 {
 public:
-	CScene3();
-	~CScene3(void);
+	CScene1();
+	~CScene1(void);
 
 
 	virtual void MouseMove(void);					// Tratamento de movimento do mouse
