@@ -5,6 +5,9 @@ CScene1::CScene1()
 	pCamera = NULL;
 	pTexto = NULL;
 	pTextures = NULL;
+	pModelX = NULL;
+	pModelY = NULL;
+	pModelZ = NULL;
 	
 	bIsWireframe = false;
 	bIsCameraFPS = true;
@@ -28,7 +31,29 @@ CScene1::CScene1()
 	fRenderPosY = 0.0f;
 
 	// Carrega todas as texturas
-	//pTextures = new CTexture();	
+	pTextures = new CTexture();	
+
+	// skybox textures
+	/*pTextures->CreateTextureClamp(0, "../Scene1/back.bmp");
+	pTextures->CreateTextureClamp(1, "../Scene1/front.bmp");
+	pTextures->CreateTextureClamp(2, "../Scene1/down.bmp");
+	pTextures->CreateTextureClamp(3, "../Scene1/up.bmp");
+	pTextures->CreateTextureClamp(4, "../Scene1/left.bmp");
+	pTextures->CreateTextureClamp(5, "../Scene1/right.bmp");*/
+
+	PointLightAmbient[0] = 1.0f;	PointLightAmbient[1] = 1.0f;	PointLightAmbient[2] = 1.0f;	PointLightAmbient[3] = 1.0f;
+	PointLightDiffuse[0] = 1.0f;	PointLightDiffuse[1] = 1.0f;	PointLightDiffuse[2] = 1.0f;	PointLightDiffuse[3] = 1.0f;
+	PointLightSpecular[0] = 1.0f;	PointLightSpecular[1] = 1.0f;	PointLightSpecular[2] = 1.0f;	PointLightSpecular[3] = 1.0f;
+	PointLightPosition[0] = 0.0f;
+	PointLightPosition[1] = 40.0f;
+	PointLightPosition[2] = 30.0f;
+	PointLightPosition[3] = 1.0f;
+
+	fFogDensity = 0.01f;
+	vFogColor[0] = 0.7f;
+	vFogColor[1] = 0.7f;
+	vFogColor[2] = 0.7f;
+	vFogColor[3] = 1.0f;
 
 }
 
@@ -58,6 +83,24 @@ CScene1::~CScene1(void)
 		delete pTimer;
 		pTimer = NULL;
 	}	
+
+	if (pModelX)
+	{
+		delete pModelX;
+		pModelX = NULL;
+	}
+
+	if (pModelY)
+	{
+		delete pModelY;
+		pModelY = NULL;
+	}
+
+	if (pModelZ)
+	{
+		delete pModelZ;
+		pModelZ = NULL;
+	}
 }
 
 
@@ -76,6 +119,7 @@ int CScene1::DrawGLScene(void)	// Função que desenha a cena
 	
 	pTimer->Update();							// Atualiza o timer
 
+	//glClearColor(vFogColor[0], vFogColor[1], vFogColor[2], 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);	// Limpa a tela e o Depth Buffer
 	glLoadIdentity();									// Inicializa a Modelview Matrix Atual
 
@@ -100,21 +144,81 @@ int CScene1::DrawGLScene(void)	// Função que desenha a cena
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 
-
-
-
-
-
-
-
-
-
-
-
-
+	glEnable(GL_TEXTURE_2D);
 	
+	// d. Iluminação
+	glEnable(GL_LIGHTING);
+	glLightfv(GL_LIGHT0, GL_AMBIENT, PointLightAmbient);
+	glLightfv(GL_LIGHT0, GL_DIFFUSE, PointLightDiffuse);
+	glLightfv(GL_LIGHT0, GL_SPECULAR, PointLightSpecular);
+	glLightfv(GL_LIGHT0, GL_POSITION, PointLightPosition);
+	glEnable(GL_LIGHT0);
+
+	// j. Neblina (fog)
+	/*glEnable(GL_FOG);
+	glHint(GL_FOG_HINT, GL_NICEST);
+	glFogfv(GL_FOG_COLOR, vFogColor);
+	glFogf(GL_FOG_START, 10.0);
+	glFogf(GL_FOG_END, 1000.0);
+	glFogi(GL_FOG_MODE, GL_LINEAR);*/
 
 
+	// a. Modelagem com modo imediato e material
+	/*MatAmbient[0] = 0.1745f;	MatAmbient[1] = 0.01175f;	MatAmbient[2] = 0.01175f;	MatAmbient[3] = 0.55f;
+	MatDiffuse[0] = 0.61424f;	MatDiffuse[1] = 0.04136f;	MatDiffuse[2] = 0.04136f;	MatDiffuse[3] = 0.55f;
+	MatSpecular[0] = 0.727811f;	MatSpecular[1] = 0.626959f;	MatSpecular[2] = 0.626959f;	MatSpecular[3] = 0.55f;
+	MatShininess = 76.8f;
+	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, MatAmbient);
+	glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, MatDiffuse);
+	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, MatSpecular);
+	glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, MatShininess);*/
+	/*glPushMatrix();
+	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+	glTranslatef(0.0f, 0.0f, 0.0f);
+	glRotatef(0.0f, 1.0f, 0.0f, 0.0f);
+	glScalef(1.0f, 1.0f, 1.0f);
+	glBegin(GL_TRIANGLES);
+	glVertex3f(-2.0f, 0.0f, 0.0f);
+	glVertex3f(2.0f, 0.0f, 0.0f);
+	glVertex3f(0.0f, 2.0f, 0.0f);
+	glEnd();
+	glPopMatrix();*/
+
+	// Mapeamento de textura em modelagem com modo imediato
+	/*glPushMatrix();
+	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+	glTranslatef(0.0f, 0.0f, 0.0f);
+	glRotatef(0.0f, 1.0f, 0.0f, 0.0f);
+	glScalef(1.0f, 1.0f, 1.0f);
+	glBegin(GL_TRIANGLES);
+	glTexCoord2f(0.0f, 0.0f); glVertex3f(-2.0f, 0.0f, 0.0f);
+	glTexCoord2f(0.0f, 1.0f); glVertex3f(2.0f, 0.0f, 0.0f);
+	glTexCoord2f(0.5f, 1.0f); glVertex3f(0.0f, 2.0f, 0.0f);
+	glEnd();
+	glPopMatrix();*/
+
+	// b. Modelagem com 3DS Max
+	/*glPushMatrix();
+	glTranslatef(0.0f, 0.0f, 0.0f);
+	glRotatef(0.0f, 1.0f, 0.0f, 0.0f);
+	glScalef(1.0f, 1.0f, 1.0f);
+	pModelX->Draw();
+	glPopMatrix();*/
+
+	// c. Modelo com mapeamento de textures Unrap UVW
+
+
+
+	// k. Transparência (blending)
+	/*glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	glDisable(GL_BLEND);*/
+
+	//glDisable(GL_FOG);
+	glDisable(GL_LIGHT0);
+	glDisable(GL_LIGHTING);
+	glDisable(GL_TEXTURE_2D);
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//                               DESENHA OS OBJETOS DA CENA (FIM)
@@ -298,5 +402,93 @@ void CScene1::DrawAxis()
 	glEnd();
 	glPopMatrix();
 }
+
+void CScene1::DrawSkyBox(float x, float y, float z, float width, float height, float length, CTexture* pTextures)
+{
+
+	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+	glPushMatrix();
+
+	// Centraliza o Skybox em torno da posição especificada(x, y, z)
+	x = x - width / 2;
+	y = y - height / 2;
+	z = z - length / 2;
+
+
+	// Aplica a textura que representa a parte da frente do skybox (BACK map)
+	pTextures->ApplyTexture(0);
+
+	// Desenha face BACK do cubo do skybox
+	glBegin(GL_QUADS);
+	glTexCoord2f(0.0f, 0.0f); glVertex3f(x, y, z);
+	glTexCoord2f(1.0f, 0.0f); glVertex3f(x + width, y, z);
+	glTexCoord2f(1.0f, 1.0f); glVertex3f(x + width, y + height, z);
+	glTexCoord2f(0.0f, 1.0f); glVertex3f(x, y + height, z);
+	glEnd();
+
+
+	// Aplica a textura que representa a parte da frente do skybox (FRONT map)
+	pTextures->ApplyTexture(1);
+
+	// Desenha face FRONT do cubo do skybox
+	glBegin(GL_QUADS);
+	glTexCoord2f(1.0f, 0.0f); glVertex3f(x, y, z + length);
+	glTexCoord2f(1.0f, 1.0f); glVertex3f(x, y + height, z + length);
+	glTexCoord2f(0.0f, 1.0f); glVertex3f(x + width, y + height, z + length);
+	glTexCoord2f(0.0f, 0.0f); glVertex3f(x + width, y, z + length);
+	glEnd();
+
+
+	// Aplica a textura que representa a parte da frente do skybox (DOWN map)
+	pTextures->ApplyTexture(2);
+
+	// Desenha face BOTTOM do cubo do skybox
+	glBegin(GL_QUADS);
+	glTexCoord2f(1.0f, 0.0f); glVertex3f(x, y, z);
+	glTexCoord2f(1.0f, 1.0f); glVertex3f(x, y, z + length);
+	glTexCoord2f(0.0f, 1.0f); glVertex3f(x + width, y, z + length);
+	glTexCoord2f(0.0f, 0.0f); glVertex3f(x + width, y, z);
+	glEnd();
+
+
+	// Aplica a textura que representa a parte da frente do skybox (UP map)
+	pTextures->ApplyTexture(3);
+
+	// Desenha face TOP do cubo do skybox
+	glBegin(GL_QUADS);
+	glTexCoord2f(1.0f, 1.0f); glVertex3f(x, y + height, z);
+	glTexCoord2f(0.0f, 1.0f); glVertex3f(x + width, y + height, z);
+	glTexCoord2f(0.0f, 0.0f); glVertex3f(x + width, y + height, z + length);
+	glTexCoord2f(1.0f, 0.0f); glVertex3f(x, y + height, z + length);
+	glEnd();
+
+
+	// Aplica a textura que representa a parte da frente do skybox (LEFT map)
+	pTextures->ApplyTexture(4);
+
+	// Desenha face LEFT do cubo do skybox
+	glBegin(GL_QUADS);
+	glTexCoord2f(1.0f, 0.0f); glVertex3f(x, y, z);
+	glTexCoord2f(1.0f, 1.0f); glVertex3f(x, y + height, z);
+	glTexCoord2f(0.0f, 1.0f); glVertex3f(x, y + height, z + length);
+	glTexCoord2f(0.0f, 0.0f); glVertex3f(x, y, z + length);
+	glEnd();
+
+
+	// Aplica a textura que representa a parte da frente do skybox (RIGHT map)
+	pTextures->ApplyTexture(5);
+
+	// Desenha face RIGHT do cubo do skybox
+	glBegin(GL_QUADS);
+	glTexCoord2f(0.0f, 0.0f); glVertex3f(x + width, y, z);
+	glTexCoord2f(1.0f, 0.0f); glVertex3f(x + width, y, z + length);
+	glTexCoord2f(1.0f, 1.0f); glVertex3f(x + width, y + height, z + length);
+	glTexCoord2f(0.0f, 1.0f); glVertex3f(x + width, y + height, z);
+	glEnd();
+
+	glPopMatrix();
+
+}
+
 
 

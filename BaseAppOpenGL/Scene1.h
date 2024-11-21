@@ -4,7 +4,7 @@
 #include "CTimer.h"
 #include "CTexto.h"
 #include "CCamera.h"
-
+#include "CModel_3DS.h"
 
 
 class CScene1 : public CSceneBaseClass
@@ -21,6 +21,9 @@ public:
 
 	void Draw3DSGrid(float width, float length);
 	void DrawAxis();
+	void DrawSkyBox(float x, float y, float z,
+		float width, float height, float length,
+		CTexture* pTextures);
 
 	
 private:
@@ -29,7 +32,6 @@ private:
 	bool	active;			// Window Active Flag Set To TRUE By Default
 	bool	fullscreen;		// Exibir janela em modo fullscreem (TRUE) ou em janela (FALSE)
 
-
 	CCamera* pCamera;	// Gerencia câmera OpenGL
 	float fDeltaY;				// Rotação da câmera OpenGL no eixo Y
 	float fDeltaX;				// Rotação da câmera OpenGL no eixo X
@@ -37,7 +39,6 @@ private:
 	CTexto* pTexto;	// Objeto que gerencia texto
 	CTexture* pTextures;	// Objeto que gerencia texturas
 	CTimer* pTimer;	// Objeto que gerencia o timer
-
 
 	int		iFPS;			// FPS and FPS Counter
 	int		iFrames;		// FPS and FPS Counter
@@ -50,6 +51,23 @@ private:
 
 	float fRenderPosY;
 	float fTimerPosY;
+
+	GLfloat PointLightAmbient[4];
+	GLfloat PointLightDiffuse[4];
+	GLfloat PointLightSpecular[4];
+	GLfloat PointLightPosition[4];
+
+	GLfloat MatAmbient[4];
+	GLfloat MatDiffuse[4];
+	GLfloat MatSpecular[4];
+	GLfloat MatShininess;
+
+	float vFogColor[4];
+	float fFogDensity;
+
+	CModel_3DS* pModelX;
+	CModel_3DS* pModelY;
+	CModel_3DS* pModelZ;
 
 };
 
