@@ -65,9 +65,8 @@ private:
 	float vFogColor[4];
 	float fFogDensity;
 
-	CModel_3DS* pModelX;
-	CModel_3DS* pModelY;
+	CModel_3DS* pModelTerrain;
+	CModel_3DS* pModelWater;
 	CModel_3DS* pModelZ;
 
 };
-

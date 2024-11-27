@@ -5,8 +5,8 @@ CScene1::CScene1()
 	pCamera = NULL;
 	pTexto = NULL;
 	pTextures = NULL;
-	pModelX = NULL;
-	pModelY = NULL;
+	pModelTerrain = NULL;
+	pModelWater = NULL;
 	pModelZ = NULL;
 	
 	bIsWireframe = false;
@@ -50,10 +50,16 @@ CScene1::CScene1()
 	PointLightPosition[3] = 1.0f;
 
 	fFogDensity = 0.01f;
-	vFogColor[0] = 0.7f;
-	vFogColor[1] = 0.7f;
-	vFogColor[2] = 0.7f;
+	vFogColor[0] = 0.8f;
+	vFogColor[1] = 0.8f;
+	vFogColor[2] = 0.8f;
 	vFogColor[3] = 1.0f;
+
+	pModelTerrain = new CModel_3DS();
+	pModelTerrain->Load("../Scene1/terrain.3DS");
+
+	pModelWater = new CModel_3DS();
+	pModelWater->Load("../Scene1/Water.3DS");
 
 }
 
@@ -84,16 +90,16 @@ CScene1::~CScene1(void)
 		pTimer = NULL;
 	}	
 
-	if (pModelX)
+	if (pModelTerrain)
 	{
-		delete pModelX;
-		pModelX = NULL;
+		delete pModelTerrain;
+		pModelTerrain = NULL;
 	}
 
-	if (pModelY)
+	if (pModelWater)
 	{
-		delete pModelY;
-		pModelY = NULL;
+		delete pModelWater;
+		pModelWater = NULL;
 	}
 
 	if (pModelZ)
@@ -119,7 +125,7 @@ int CScene1::DrawGLScene(void)	// Função que desenha a cena
 	
 	pTimer->Update();							// Atualiza o timer
 
-	//glClearColor(vFogColor[0], vFogColor[1], vFogColor[2], 1.0f);
+	glClearColor(vFogColor[0], vFogColor[1], vFogColor[2], 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);	// Limpa a tela e o Depth Buffer
 	glLoadIdentity();									// Inicializa a Modelview Matrix Atual
 
@@ -128,10 +134,10 @@ int CScene1::DrawGLScene(void)	// Função que desenha a cena
 	pCamera->setView();
 
 	// Desenha grid 
-	Draw3DSGrid(20.0f, 20.0f);
+	//Draw3DSGrid(20.0f, 20.0f);
 
 	// Desenha os eixos do sistema cartesiano
-	DrawAxis();
+	//DrawAxis();
 
 	// Modo FILL ou WIREFRAME (pressione barra de espaço)	
 	if (bIsWireframe)
@@ -147,20 +153,20 @@ int CScene1::DrawGLScene(void)	// Função que desenha a cena
 	glEnable(GL_TEXTURE_2D);
 	
 	// d. Iluminação
-	glEnable(GL_LIGHTING);
+	/*glEnable(GL_LIGHTING);
 	glLightfv(GL_LIGHT0, GL_AMBIENT, PointLightAmbient);
 	glLightfv(GL_LIGHT0, GL_DIFFUSE, PointLightDiffuse);
 	glLightfv(GL_LIGHT0, GL_SPECULAR, PointLightSpecular);
 	glLightfv(GL_LIGHT0, GL_POSITION, PointLightPosition);
-	glEnable(GL_LIGHT0);
+	glEnable(GL_LIGHT0);*/
 
 	// j. Neblina (fog)
-	/*glEnable(GL_FOG);
+	glEnable(GL_FOG);
 	glHint(GL_FOG_HINT, GL_NICEST);
 	glFogfv(GL_FOG_COLOR, vFogColor);
 	glFogf(GL_FOG_START, 10.0);
 	glFogf(GL_FOG_END, 1000.0);
-	glFogi(GL_FOG_MODE, GL_LINEAR);*/
+	glFogi(GL_FOG_MODE, GL_LINEAR);
 
 
 	// a. Modelagem com modo imediato e material
@@ -181,6 +187,22 @@ int CScene1::DrawGLScene(void)	// Função que desenha a cena
 	glVertex3f(-2.0f, 0.0f, 0.0f);
 	glVertex3f(2.0f, 0.0f, 0.0f);
 	glVertex3f(0.0f, 2.0f, 0.0f);
+	glEnd();
+	glPopMatrix();*/
+
+	glPushMatrix();
+	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+	pModelTerrain->Draw();
+	glPopMatrix();
+
+	/*glPushMatrix();
+	glColor4ub(91, 163, 218, 255);
+	glTranslatef(0.0f, 40.0f, 0.0f);
+	glBegin(GL_QUADS);
+	glVertex3f(-250.0f, 0.0f, 250.0f);
+	glVertex3f(250.0f, 0.0f, 250.0f);
+	glVertex3f(250.0f, 0.0f, -250.0f);
+	glVertex3f(-250.0f, 0.0f, -250.0f);
 	glEnd();
 	glPopMatrix();*/
 
@@ -210,14 +232,30 @@ int CScene1::DrawGLScene(void)	// Função que desenha a cena
 
 
 	// k. Transparência (blending)
-	/*glEnable(GL_BLEND);
+	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	glDisable(GL_BLEND);*/
+	glPushMatrix();
+	glColor4f(1.0f, 1.0f, 1.0f, 0.8f);
+	pModelWater->Draw();
+	glPopMatrix();
 
-	//glDisable(GL_FOG);
-	glDisable(GL_LIGHT0);
-	glDisable(GL_LIGHTING);
+	/*glPushMatrix();
+	glColor4f(0.222f, 0.352f, 0.652f, 0.8f);
+	glTranslatef(0.0f, 0.0f, 0.0f);
+	glBegin(GL_QUADS);
+	glVertex3f(-500.0f, 0.0f, 500.0f);
+	glVertex3f(500.0f, 0.0f, 500.0f);
+	glVertex3f(500.0f, 0.0f, -500.0f);
+	glVertex3f(-500.0f, 0.0f, -500.0f);
+	glEnd();
+	glPopMatrix();*/
+
+	glDisable(GL_BLEND);
+
+	glDisable(GL_FOG);
+	/*glDisable(GL_LIGHT0);
+	glDisable(GL_LIGHTING);*/
 	glDisable(GL_TEXTURE_2D);
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
