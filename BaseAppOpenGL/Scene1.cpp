@@ -7,7 +7,7 @@ CScene1::CScene1()
 	pTextures = NULL;
 	pModelTerrain = NULL;
 	pModelWater = NULL;
-	pModelZ = NULL;
+	pModelBridge = NULL;
 	
 	bIsWireframe = false;
 	bIsCameraFPS = true;
@@ -34,19 +34,19 @@ CScene1::CScene1()
 	pTextures = new CTexture();	
 
 	// skybox textures
-	/*pTextures->CreateTextureClamp(0, "../Scene1/back.bmp");
+	pTextures->CreateTextureClamp(0, "../Scene1/back.bmp");
 	pTextures->CreateTextureClamp(1, "../Scene1/front.bmp");
 	pTextures->CreateTextureClamp(2, "../Scene1/down.bmp");
 	pTextures->CreateTextureClamp(3, "../Scene1/up.bmp");
 	pTextures->CreateTextureClamp(4, "../Scene1/left.bmp");
-	pTextures->CreateTextureClamp(5, "../Scene1/right.bmp");*/
+	pTextures->CreateTextureClamp(5, "../Scene1/right.bmp");
 
 	PointLightAmbient[0] = 1.0f;	PointLightAmbient[1] = 1.0f;	PointLightAmbient[2] = 1.0f;	PointLightAmbient[3] = 1.0f;
 	PointLightDiffuse[0] = 1.0f;	PointLightDiffuse[1] = 1.0f;	PointLightDiffuse[2] = 1.0f;	PointLightDiffuse[3] = 1.0f;
 	PointLightSpecular[0] = 1.0f;	PointLightSpecular[1] = 1.0f;	PointLightSpecular[2] = 1.0f;	PointLightSpecular[3] = 1.0f;
-	PointLightPosition[0] = 0.0f;
-	PointLightPosition[1] = 40.0f;
-	PointLightPosition[2] = 30.0f;
+	PointLightPosition[0] = -1000.0f;
+	PointLightPosition[1] = 500.0f;
+	PointLightPosition[2] = 1000.0f;
 	PointLightPosition[3] = 1.0f;
 
 	fFogDensity = 0.01f;
@@ -54,12 +54,16 @@ CScene1::CScene1()
 	vFogColor[1] = 0.8f;
 	vFogColor[2] = 0.8f;
 	vFogColor[3] = 1.0f;
+	bIsFogEnabled = false;
 
 	pModelTerrain = new CModel_3DS();
 	pModelTerrain->Load("../Scene1/terrain.3DS");
 
 	pModelWater = new CModel_3DS();
 	pModelWater->Load("../Scene1/Water.3DS");
+
+	pModelBridge = new CModel_3DS();
+	pModelBridge->Load("../Scene1/bridge.3DS");
 
 }
 
@@ -102,10 +106,10 @@ CScene1::~CScene1(void)
 		pModelWater = NULL;
 	}
 
-	if (pModelZ)
+	if (pModelBridge)
 	{
-		delete pModelZ;
-		pModelZ = NULL;
+		delete pModelBridge;
+		pModelBridge = NULL;
 	}
 }
 
@@ -153,21 +157,27 @@ int CScene1::DrawGLScene(void)	// Função que desenha a cena
 	glEnable(GL_TEXTURE_2D);
 	
 	// d. Iluminação
-	/*glEnable(GL_LIGHTING);
 	glLightfv(GL_LIGHT0, GL_AMBIENT, PointLightAmbient);
 	glLightfv(GL_LIGHT0, GL_DIFFUSE, PointLightDiffuse);
 	glLightfv(GL_LIGHT0, GL_SPECULAR, PointLightSpecular);
 	glLightfv(GL_LIGHT0, GL_POSITION, PointLightPosition);
-	glEnable(GL_LIGHT0);*/
+	glEnable(GL_LIGHTING);
+	glEnable(GL_LIGHT0);
 
 	// j. Neblina (fog)
-	glEnable(GL_FOG);
-	glHint(GL_FOG_HINT, GL_NICEST);
-	glFogfv(GL_FOG_COLOR, vFogColor);
-	glFogf(GL_FOG_START, 10.0);
-	glFogf(GL_FOG_END, 1000.0);
-	glFogi(GL_FOG_MODE, GL_LINEAR);
-
+	if (bIsFogEnabled) {
+		glEnable(GL_FOG);
+		glHint(GL_FOG_HINT, GL_NICEST);
+		glFogfv(GL_FOG_COLOR, vFogColor);
+		glFogf(GL_FOG_START, 20.0);
+		glFogf(GL_FOG_END, 1000.0);
+		glFogi(GL_FOG_MODE, GL_LINEAR);
+	}
+	else {
+		DrawSkyBox(0.0f, 300.0f, 0.0f,
+			2500.0f, 2500.0f, 2500.0f,
+			pTextures);
+	}
 
 	// a. Modelagem com modo imediato e material
 	/*MatAmbient[0] = 0.1745f;	MatAmbient[1] = 0.01175f;	MatAmbient[2] = 0.01175f;	MatAmbient[3] = 0.55f;
@@ -193,6 +203,12 @@ int CScene1::DrawGLScene(void)	// Função que desenha a cena
 	glPushMatrix();
 	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 	pModelTerrain->Draw();
+	glPopMatrix();
+
+	glPushMatrix();
+	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+	glTranslatef(0.0f, 8.0f, 315.0f);
+	pModelBridge->Draw();
 	glPopMatrix();
 
 	/*glPushMatrix();
@@ -236,7 +252,7 @@ int CScene1::DrawGLScene(void)	// Função que desenha a cena
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	glPushMatrix();
-	glColor4f(1.0f, 1.0f, 1.0f, 0.8f);
+	glColor4f(1.0f, 1.0f, 1.0f, 0.5f);
 	pModelWater->Draw();
 	glPopMatrix();
 
@@ -253,9 +269,11 @@ int CScene1::DrawGLScene(void)	// Função que desenha a cena
 
 	glDisable(GL_BLEND);
 
-	glDisable(GL_FOG);
-	/*glDisable(GL_LIGHT0);
-	glDisable(GL_LIGHTING);*/
+	if (bIsFogEnabled) {
+		glDisable(GL_FOG);
+	}
+	glDisable(GL_LIGHT0);
+	glDisable(GL_LIGHTING);
 	glDisable(GL_TEXTURE_2D);
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -285,6 +303,11 @@ int CScene1::DrawGLScene(void)	// Função que desenha a cena
 		pTexto->glPrint("[TAB]  Modo FILL");
 	}
 
+	glRasterPos2f(10.0f, 20.0f);
+	if (bIsFogEnabled)
+		pTexto->glPrint("[ENTER] FOG: TRUE");
+	else
+		pTexto->glPrint("[ENTER] FOG: FALSE");
 
 	//// Camera LookAt
 	glRasterPos2f(10.0f, 40.0f);
@@ -385,6 +408,7 @@ void CScene1::KeyDownPressed(WPARAM	wParam) // Tratamento de teclas pressionadas
 		break;
 
 	case VK_RETURN:
+		bIsFogEnabled = !bIsFogEnabled;
 		break;
 
 	}

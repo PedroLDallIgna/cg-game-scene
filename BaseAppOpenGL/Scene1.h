@@ -64,9 +64,10 @@ private:
 
 	float vFogColor[4];
 	float fFogDensity;
+	bool bIsFogEnabled;
 
 	CModel_3DS* pModelTerrain;
 	CModel_3DS* pModelWater;
-	CModel_3DS* pModelZ;
+	CModel_3DS* pModelBridge;
 
 };
