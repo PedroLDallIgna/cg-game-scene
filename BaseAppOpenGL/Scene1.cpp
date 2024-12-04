@@ -8,6 +8,7 @@ CScene1::CScene1()
 	pModelTerrain = NULL;
 	pModelWater = NULL;
 	pModelBridge = NULL;
+	pModelMuro = NULL;
 	
 	bIsWireframe = false;
 	bIsCameraFPS = true;
@@ -40,6 +41,8 @@ CScene1::CScene1()
 	pTextures->CreateTextureClamp(3, "../Scene1/up.bmp");
 	pTextures->CreateTextureClamp(4, "../Scene1/left.bmp");
 	pTextures->CreateTextureClamp(5, "../Scene1/right.bmp");
+
+	pTextures->CreateTextureTGA(6, "../Scene1/cypress.tga");
 
 	PointLightAmbient[0] = 1.0f;	PointLightAmbient[1] = 1.0f;	PointLightAmbient[2] = 1.0f;	PointLightAmbient[3] = 1.0f;
 	PointLightDiffuse[0] = 1.0f;	PointLightDiffuse[1] = 1.0f;	PointLightDiffuse[2] = 1.0f;	PointLightDiffuse[3] = 1.0f;
@@ -205,12 +208,6 @@ int CScene1::DrawGLScene(void)	// Função que desenha a cena
 	pModelTerrain->Draw();
 	glPopMatrix();
 
-	glPushMatrix();
-	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-	glTranslatef(0.0f, 8.0f, 315.0f);
-	pModelBridge->Draw();
-	glPopMatrix();
-
 	/*glPushMatrix();
 	glColor4ub(91, 163, 218, 255);
 	glTranslatef(0.0f, 40.0f, 0.0f);
@@ -244,12 +241,45 @@ int CScene1::DrawGLScene(void)	// Função que desenha a cena
 	glPopMatrix();*/
 
 	// c. Modelo com mapeamento de textures Unrap UVW
-
+	glPushMatrix();
+	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+	glTranslatef(0.0f, 8.0f, 315.0f);
+	pModelBridge->Draw();
+	glPopMatrix();
 
 
 	// k. Transparência (blending)
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glEnable(GL_ALPHA_TEST);
+	glAlphaFunc(GL_GREATER, 0.95f);
+
+	DrawTree(42.0f, 45.0f, 20.0f); // 1
+	DrawTree(45.0f, 52.0f, 0.0f); // 2
+	DrawTree(50.0f, 58.0f, -20.0f); // 3
+	DrawTree(55.0f, 64.0f, -40.0f); // 4
+	DrawTree(60.0f, 70.0f, -60.0f); // 5
+	DrawTree(65.0f, 76.0f, -80.0f); // 6
+	DrawTree(70.0f, 85.0f, -100.0f); // 7
+	DrawTree(72.0f, 89.0f, -120.0f); // 8
+	DrawTree(73.0f, 94.0f, -140.0f); // 9
+	DrawTree(76.0f, 97.0f, -160.0f); // 10
+	DrawTree(76.0f, 100.0f, -180.0f); // 11
+	DrawTree(75.0f, 107.0f, -200.0f); // 12
+	DrawTree(70.0f, 112.0f, -220.0f); // 13
+	DrawTree(58.0f, 114.0f, -233.0f); // 14
+	DrawTree(45.0f, 116.0f, -245.0f); // 15
+	DrawTree(30.0f, 118.0f, -258.0f); // 16
+	DrawTree(10.0f, 118.0f, -258.0f); // 17
+	DrawTree(-10.0f, 119.0f, -250.0f); // 18
+	DrawTree(-30.0f, 121.0f, -237.0f); // 19
+	DrawTree(-48.0f, 123.0f, -225.0f); // 20
+	DrawTree(-55.0f, 125.0f, -205.0f); // 21
+	DrawTree(-56.0f, 129.0f, -185.0f); // 22
+	DrawTree(-53.0f, 132.0f, -165.0f); // 23
+	DrawTree(-44.0f, 134.0f, -145.0f); // 24
+
+	glDisable(GL_ALPHA_TEST);
 
 	glPushMatrix();
 	glColor4f(1.0f, 1.0f, 1.0f, 0.5f);
@@ -550,6 +580,27 @@ void CScene1::DrawSkyBox(float x, float y, float z, float width, float height, f
 
 	glPopMatrix();
 
+}
+
+void CScene1::DrawTree(GLfloat x, GLfloat y, GLfloat z)
+{
+	pTextures->ApplyTexture(6);
+	glPushMatrix();
+	glTranslatef(x, y, z);
+	glScalef(5.0f, 5.0f, 5.0f);
+	glBegin(GL_QUADS);
+	glNormal3f(0.0f, 0.0f, 1.0f);
+	glTexCoord2f(0.0f, 0.0f); glVertex3f(-5.0, 0.0, 0.0);
+	glTexCoord2f(1.0f, 0.0f); glVertex3f(5.0, 0.0, 0.0);
+	glTexCoord2f(1.0f, 1.0f); glVertex3f(5.0, 10.0, 0.0);
+	glTexCoord2f(0.0f, 1.0f); glVertex3f(-5.0, 10.0, 0.0);
+
+	glTexCoord2f(0.0f, 0.0f); glVertex3f(0.0, 0.0, 5.0);
+	glTexCoord2f(1.0f, 0.0f); glVertex3f(0.0, 0.0, -5.0);
+	glTexCoord2f(1.0f, 1.0f); glVertex3f(0.0, 10.0, -5.0);
+	glTexCoord2f(0.0f, 1.0f); glVertex3f(0.0, 10.0, 5.0);
+	glEnd();
+	glPopMatrix();
 }
 
 

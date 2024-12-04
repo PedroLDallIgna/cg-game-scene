@@ -25,6 +25,8 @@ public:
 		float width, float height, float length,
 		CTexture* pTextures);
 
+	void DrawTree(GLfloat x, GLfloat y, GLfloat z);
+
 	
 private:
 
@@ -69,5 +71,6 @@ private:
 	CModel_3DS* pModelTerrain;
 	CModel_3DS* pModelWater;
 	CModel_3DS* pModelBridge;
+	CModel_3DS* pModelMuro;
 
 };
