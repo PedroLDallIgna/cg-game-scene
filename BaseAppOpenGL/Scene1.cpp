@@ -68,6 +68,9 @@ CScene1::CScene1()
 	pModelBridge = new CModel_3DS();
 	pModelBridge->Load("../Scene1/bridge.3DS");
 
+	pModelMuro = new CModel_3DS();
+	pModelMuro->Load("../Scene1/Wall.3DS");
+
 }
 
 
@@ -113,6 +116,12 @@ CScene1::~CScene1(void)
 	{
 		delete pModelBridge;
 		pModelBridge = NULL;
+	}
+
+	if (pModelMuro)
+	{
+		delete pModelMuro;
+		pModelMuro = NULL;
 	}
 }
 
@@ -206,6 +215,10 @@ int CScene1::DrawGLScene(void)	// Função que desenha a cena
 	glPushMatrix();
 	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 	pModelTerrain->Draw();
+	glPopMatrix();
+
+	glPushMatrix();
+	pModelMuro->Draw();
 	glPopMatrix();
 
 	/*glPushMatrix();
