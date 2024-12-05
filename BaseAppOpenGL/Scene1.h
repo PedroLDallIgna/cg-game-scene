@@ -75,5 +75,5 @@ private:
 	CModel_3DS* pModelContainer1;
 	CModel_3DS* pModelContainer2;
 	CModel_3DS* pModelBarrel;
-
+	CModel_3DS* pModelLighthouse;
 };

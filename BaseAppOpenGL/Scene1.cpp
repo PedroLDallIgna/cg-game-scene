@@ -9,11 +9,11 @@ CScene1::CScene1()
 	pModelWater = NULL;
 	pModelBridge = NULL;
 	pModelMuro = NULL;
-
+	pModelLighthouse = NULL;
 	pModelContainer1 = NULL;
 	pModelContainer2 = NULL;
 	pModelBarrel = NULL;
-	
+
 	bIsWireframe = false;
 	bIsCameraFPS = true;
 
@@ -75,8 +75,6 @@ CScene1::CScene1()
 	pModelMuro = new CModel_3DS();
 	pModelMuro->Load("../Scene1/Wall.3DS");
 
-
-
 	pModelContainer1 = new CModel_3DS();
 	pModelContainer1->Load("../Scene1/container.3DS");
 
@@ -86,6 +84,8 @@ CScene1::CScene1()
 	pModelBarrel = new CModel_3DS();
 	pModelBarrel->Load("../Scene1/barrel.3DS");
 
+	pModelLighthouse = new CModel_3DS();
+	pModelLighthouse->Load("../Scene1/lighthouse.3DS");
 }
 
 
@@ -139,8 +139,6 @@ CScene1::~CScene1(void)
 		pModelMuro = NULL;
 	}
 
-
-
 	if (pModelContainer1)
 	{
 		delete pModelContainer1;
@@ -159,6 +157,11 @@ CScene1::~CScene1(void)
 		pModelBarrel = NULL;
 	}
 
+	if (pModelLighthouse)
+	{
+		delete pModelLighthouse;
+		pModelLighthouse = NULL;
+	}
 }
 
 
@@ -255,6 +258,12 @@ int CScene1::DrawGLScene(void)	// Função que desenha a cena
 
 	glPushMatrix();
 	pModelMuro->Draw();
+	glPopMatrix();
+
+	glPushMatrix();
+	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+	glTranslatef(5.0f, 136.0f, -175.0f);
+	pModelLighthouse->Draw();
 	glPopMatrix();
 
 	/*glPushMatrix();
