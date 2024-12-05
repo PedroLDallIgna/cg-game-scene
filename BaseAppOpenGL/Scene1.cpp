@@ -9,6 +9,10 @@ CScene1::CScene1()
 	pModelWater = NULL;
 	pModelBridge = NULL;
 	pModelMuro = NULL;
+
+	pModelContainer1 = NULL;
+	pModelContainer2 = NULL;
+	pModelBarrel = NULL;
 	
 	bIsWireframe = false;
 	bIsCameraFPS = true;
@@ -71,6 +75,17 @@ CScene1::CScene1()
 	pModelMuro = new CModel_3DS();
 	pModelMuro->Load("../Scene1/Wall.3DS");
 
+
+
+	pModelContainer1 = new CModel_3DS();
+	pModelContainer1->Load("../Scene1/container.3DS");
+
+	/*pModelContainer2 = new CModel_3DS();
+	pModelContainer2->Load("../Scene1/container2.3DS");*/
+
+	pModelBarrel = new CModel_3DS();
+	pModelBarrel->Load("../Scene1/barrel.3DS");
+
 }
 
 
@@ -123,6 +138,27 @@ CScene1::~CScene1(void)
 		delete pModelMuro;
 		pModelMuro = NULL;
 	}
+
+
+
+	if (pModelContainer1)
+	{
+		delete pModelContainer1;
+		pModelContainer1 = NULL;
+	}
+
+	if (pModelContainer2)
+	{
+		delete pModelContainer2;
+		pModelContainer2 = NULL;
+	}
+
+	if (pModelBarrel)
+	{
+		delete pModelBarrel;
+		pModelBarrel = NULL;
+	}
+
 }
 
 
@@ -231,6 +267,24 @@ int CScene1::DrawGLScene(void)	// Função que desenha a cena
 	glVertex3f(-250.0f, 0.0f, -250.0f);
 	glEnd();
 	glPopMatrix();*/
+
+	glPushMatrix();
+	glTranslatef(0.0f, 40.0f, 70.0f);
+	glScalef(0.6f, 0.6f, 0.6f);
+	glRotatef(90.0f, 0.0f, 1.0f, 0.0f);
+	pModelContainer1->Draw();
+	glPopMatrix();
+
+	/*glPushMatrix();
+	glTranslatef(50.0f, 30.0f, 20.0f);
+	pModelContainer2->Draw();
+	glPopMatrix();*/
+
+	glPushMatrix();
+	glTranslatef(28.0f, 136.0f, -100.0f);
+	glScalef(0.6f, 0.6f, 0.6f);
+	pModelBarrel->Draw();
+	glPopMatrix();
 
 	// Mapeamento de textura em modelagem com modo imediato
 	/*glPushMatrix();

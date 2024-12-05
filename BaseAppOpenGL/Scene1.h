@@ -72,5 +72,8 @@ private:
 	CModel_3DS* pModelWater;
 	CModel_3DS* pModelBridge;
 	CModel_3DS* pModelMuro;
+	CModel_3DS* pModelContainer1;
+	CModel_3DS* pModelContainer2;
+	CModel_3DS* pModelBarrel;
 
 };
